@@ -1,4 +1,3 @@
-
 local mp = require "mp"
 local msg = require 'mp.msg'
 
@@ -27,7 +26,9 @@ function get_links(input)
   temp = {}
   if input == "" or input == nil then temp = {"https://proxer.me/info/47145",  "1", "3"} else temp = split_str("%S+", input) end
 
-  script = "C:\\Users\\arthu\\AppData\\Roaming\\mpv\\scripts\\.getproxer.py"
+  script = "~/.config/mpv/scripts/.getproxer.py"
+  --TODO: Add function to get script path unabhängig ob windows oder linuccs
+  --script = "C:\\Users\\arthu\\AppData\\Roaming\\mpv\\scripts\\.getproxer.py"
   
   print(temp[1])
 
