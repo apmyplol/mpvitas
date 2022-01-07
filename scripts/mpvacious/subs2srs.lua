@@ -99,7 +99,7 @@ local msg = require('mp.msg')
 local mpopt = require('mp.options')
 local OSD = require('osd_styler')
 
-local url = 'localhost:8888'
+local url = 'localhost:8765'
 
 -- namespaces
 local subs
