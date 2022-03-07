@@ -76,7 +76,7 @@ local settings = {
   system = "auto",
 
   --Use ~ for home directory. Leave as empty to use mpv/playlists
-  playlist_savepath = "X:/playlists",
+  playlist_savepath = "~/Documents/playlists/",
 
 
   --show playlist or filename every time a new file is loaded 
@@ -779,7 +779,10 @@ function write_to_file(outputfile, playlistname, length)
         fullpath = utils.join_path(pwd, filename)
       end
 
-      local title = "Episode " .. tostring(i)
+      local title = mp.get_property("playlist/" .. i .. "/title")
+      if title == "" or title == nil then
+        title = "Episode " .. tostring(i+1)
+      end
       if not (url_table[filename] == nil) then title = url_table[filename] end
       --if title:find("http", 1, true) then title = "Episode " .. tostring(i) end
       file:write("#EXTINF:,"..title.."\n")
@@ -1037,7 +1040,7 @@ mp.register_script_message("playlistmanager", handlemessage)
 
 --mp.add_key_binding("CTRL+p", "sortplaylist", sortplaylist)
 --mp.add_key_binding("CTRL+P", "shuffleplaylist", shuffleplaylist)
---mp.add_key_binding("CTRL+R", "reverseplaylist", reverseplaylist)
+mp.add_key_binding("CTRL+R", "reverseplaylist", reverseplaylist)
 mp.add_key_binding(nil, "loadfiles", playlist)
 mp.add_key_binding(nil, "saveplaylist", save_playlist)
 mp.add_key_binding(nil, "showplaylist", toggle_playlist)
