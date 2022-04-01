@@ -691,7 +691,7 @@ function save_playlist()
   --get playlist save path
   local savepath
   if settings.playlist_savepath == nil or settings.playlist_savepath == "" then
-    savepath = mp.command_native({"expand-path", "~~home/"}).."/playlists"
+    savepath = mp.command_native({"expand-path", "~~home/"}).."Documents/playlists"
   else 
     savepath = parse_home(settings.playlist_savepath)
     if savepath == nil then return end
@@ -718,7 +718,7 @@ function save_playlist()
         outputfile = utils.join_path(outputfile, input..".m3u")
         write_to_file(outputfile, input, length)
     end, {
-        text = "Enter playlist name:",
+        text = "Enter playlist name: (same name as subs-directory)",
         replace = true
     })
   --msg.error(playlistname)

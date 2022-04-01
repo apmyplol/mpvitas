@@ -6,11 +6,11 @@ local currentnum = nil
 local registered = false
 local registered_second = false
 
---1. check playlist name und nummer 
-function getpath()
+--1. check playlist name und nummer
+local function getpath()
 	currentnum = mp.get_property_number("playlist-playing-pos")
-	lastnumber = mp.get_property_number('playlist-count')
-	path = mp.get_property("playlist/" .. lastnumber-1 .. "/filename")
+	local lastnumber = mp.get_property_number('playlist-count')
+	local path = mp.get_property("playlist/" .. lastnumber-1 .. "/filename")
 	return path
 end
 
@@ -24,8 +24,10 @@ function getsubfile()
         msg.verbose("no other files in directory")
         return
     end
-    relsubfile = files[currentnum+1]
-    subfile = path .. "\\" .. relsubfile
+  table.sort(files, function(a, b) return a < b end)
+  relsubfile = files[currentnum+1]
+  -- subfile = path .. "\\" .. relsubfile
+  subfile = path .. "/" .. relsubfile
     return subfile
 end
 
@@ -34,10 +36,12 @@ end
 function loadsubs()
 	subfile = getsubfile()
 	if subfile == nil then mp.osd_message("could not load sub file") return end
-	subfile = string.gsub(subfile, "\\", "\\\\")
+	-- subfile = string.gsub(subfile, "\\", "\\\\")
+  print(subfile)
+  print(currentnum)
 	mp.commandv("sub-add", subfile, "select")
 	mp.osd_message("autoloaded subs")
-	if not registered then 
+	if not registered then
 		mp.register_event("start-file", loadsubs)
 		registered = true
 	end
