@@ -969,7 +969,9 @@ do
             '--af-append=silenceremove=1:0:-50dB',
             table.concat { '--oac=', config.audio_codec },
             table.concat { '--oacopts-add=b=', config.audio_bitrate },
-            table.concat { '-o=', dest_path }
+            table.concat { '-o=', dest_path },
+            '--include=~/secrets/mpvcr.conf'
+
         }
         return subprocess(args)
     end
@@ -1108,9 +1110,12 @@ encoder.create_snapshot = function(timestamp, filename)
         table.concat { '-start=', timestamp },
         table.concat { '--ovcopts-add=quality=', tostring(config.snapshot_quality) },
         table.concat { '--vf-add=scale=', config.snapshot_width, ':', config.snapshot_height },
-        table.concat { '-o=', output_path }
+        table.concat { '-o=', output_path },
+        '--include=~/secrets/mpvcr.conf'
+
     }
     local on_finish = function()
+        -- msg.error("finished create snapshot, storing file")
         ankiconnect.store_file(filename, output_path)
         os.remove(output_path)
     end
@@ -1147,9 +1152,11 @@ encoder.create_audio = function(start_timestamp, end_timestamp, filename)
         table.concat { '--aid=', audio_track_id },
         table.concat { '--volume=', config.tie_volumes and mp.get_property('volume') or '100' },
         table.concat { '--oacopts-add=b=', config.audio_bitrate },
-        table.concat { '-o=', output_path }
+        table.concat { '-o=', output_path },
+        '--include=~/secrets/mpvcr.conf'
     }
     local on_finish = function()
+        -- msg.error("finished create audio, storing file")
         ankiconnect.store_file(filename, output_path)
         os.remove(output_path)
     end

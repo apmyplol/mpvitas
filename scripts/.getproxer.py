@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup, SoupStrainer
 import tqdm
 from cloudscraper import CloudScraper
 
-AUTHFILE = "login.auth"
+AUTHFILE = ".login.auth"
 
 HEADERS = requests.utils.default_headers()
 '''
@@ -24,7 +24,8 @@ HEADERS.update(
     {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36", })
 '''
 
-HEADERS.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36"})
+# HEADERS.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36"})
+HEADERS.update({"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36"})
 
 if os.name == "nt":
     SLASH = "\\"
@@ -57,13 +58,14 @@ def init_preps(link = None, startep = None, endep = None):
         passwd = "nyandanyo"
         #LOGGER.info(f"{user}|{passwd}")
         scraper = CloudScraper() # use Cloudscraper to bypass Cloudflares Redirection Page
-        prourl = "https://proxer.me"
-        resp = scraper.get(prourl) # grab the main page
-        strainer = SoupStrainer(id="loginBubble") # restrict to login related html using a strainer
-        soup = BeautifulSoup(resp.content, "html.parser", parse_only=strainer) # use the strainer to restrict parsing
-        url = soup.find("form")["action"] # grab the login url
+        # prourl = "http://proxer.me"
+        prourl = "https://proxer.me/login"
+        # resp = scraper.get(prourl) # grab the main page
+        # strainer = SoupStrainer(id="loginBubble") # restrict to login related html using a strainer
+        # soup = BeautifulSoup(resp.content, "html.parser", parse_only=strainer) # use the strainer to restrict parsing
+        # url = soup.find("form")["action"] # grab the login url
         creds = {"username": user, "password": passwd, "remember": 1} # set credentials (remember is irrelevant, due to this being a singular session)
-        resp2 = SESSION.post(prourl + url, data=creds) # hopefully logged in correctly
+        resp2 = SESSION.post(prourl, data=creds) # hopefully logged in correctly
 
     except Exception as excp:
         LOGGER.exception(excp)
@@ -110,6 +112,7 @@ def init_preps(link = None, startep = None, endep = None):
             #LOGGER.debug(episodeurl)
             #LOGGER.debug(f"Creating Worker for Episode {episodenum}")
             futurelist.append(EXECUTOR.submit(retrieve_source, episodeurl, name, episodenum))
+            time.sleep(2)
 
         for future in cf.as_completed(futurelist): # check for thread status
             try:
@@ -126,13 +129,14 @@ def init_preps(link = None, startep = None, endep = None):
 def retrieve_source(episodeurl, name, episodenum):
     """ Function to make all the Magic happen, parses the streamhoster url [Proxer] and parses the video url """
     try: # if anything fails in here, it's prolly the captcha
-        #LOGGER.info(f"{episodeurl}, {name}, {episodenum}")
+        # LOGGER.info(f"{episodeurl}, {name}, {episodenum}")
         streamhosterurl = None
         resp = SESSION.get(episodeurl, timeout=30) # grab the specific episode
         out = ""
         for line in resp.text.split("\n"):
+            # print(line)
             if "var streams" in line:
-                #LOGGER.info(line.split("[{")[1].split("}];")[0].split("},{"))
+                # LOGGER.info(line.split("[{")[1].split("}];")[0].split("},{"))
                 for streamhoster in line.split("[{")[1].split("}];")[0].split("},{"): # parses all available stream hoster
                     elem = streamhoster.split("code\":\"")[1].split("\",\"img\"")[0].replace("//", "").replace(r"\/", "/").replace("\":\"", "\",\"").split("\",\"")
                     code = str(elem[0])
