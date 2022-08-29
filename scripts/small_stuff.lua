@@ -32,7 +32,7 @@ function set_vorlesung()
 	end
 end
 
-mp.register_event("start-file", set_vorlesung)
+-- mp.register_event("start-file", set_vorlesung)
 --mp.add_key_binding(nil, "title_vorlesung", set_vorlesung)
 
 mp.add_key_binding(nil, "sub_background", function() mp.set_property_native("sub-ass-override", true) mp.set_property_native("sub-back-color", "0.0/0.0/0.0") end)

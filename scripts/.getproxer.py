@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup, SoupStrainer
 import tqdm
 from cloudscraper import CloudScraper
 
-AUTHFILE = ".login.auth"
+AUTHFILE = os.path.expanduser("~") + "/secrets/proxer_login"
 
 HEADERS = requests.utils.default_headers()
 '''
@@ -52,10 +52,8 @@ def init_preps(link = None, startep = None, endep = None):
     config = ConfigParser()
     try: # safely try to read login credentials and log into proxer
         config.read(AUTHFILE)
-        #user = config["LOGIN"]["USER"]
-        #passwd = config["LOGIN"]["PASS"]
-        user = "SmokeArts"
-        passwd = "nyandanyo"
+        user = config["LOGIN"]["USER"]
+        passwd = config["LOGIN"]["PASS"]
         #LOGGER.info(f"{user}|{passwd}")
         scraper = CloudScraper() # use Cloudscraper to bypass Cloudflares Redirection Page
         # prourl = "http://proxer.me"
@@ -149,7 +147,7 @@ def retrieve_source(episodeurl, name, episodenum):
         #LOGGER.info(f"Streamhoster: {streamhosterurl}")
 
         if streamhosterurl == None:
-            print("NO URL ERROR1")
+            print("NO URL ERROR2")
             os._exit(1)
 
         resp2 = SESSION.get(streamhosterurl, timeout=30) # grabbing the page where the video is embedded in
