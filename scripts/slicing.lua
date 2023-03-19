@@ -20,6 +20,7 @@ local o = {
     command_template = [[
         ffmpeg -v warning -y -stats
         -ss $shift -i "$in" -t $duration
+        -avoid_negative_ts make_zero -fflags +genpts
         -vf eq=brightness=$br:saturation=$sat:contrast=$con:gamma=$gam
         -c:a copy "$out.$ext"
     ]],
